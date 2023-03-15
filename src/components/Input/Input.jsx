@@ -2,11 +2,12 @@ import { Formik, Field, Form } from 'formik';
 import * as yup from 'yup';
 import { nanoid } from 'nanoid';
 
-export default function Input({ updateState }) {
+export default function Input({ updateState, checkName }) {
   const initialValues = {
     name: '',
     number: '',
   };
+
   const schema = yup.object({
     name: yup.string().required(),
     number: yup.number().min(8).required(),
@@ -14,6 +15,10 @@ export default function Input({ updateState }) {
 
   function onHandleSubmit(values, { resetForm }) {
     values.id = nanoid(5);
+    console.log(checkName(values.name));
+    if (checkName(values.name)) {
+      return alert(`${values.name} is already in contacts`);
+    }
     updateState(values);
     resetForm();
   }

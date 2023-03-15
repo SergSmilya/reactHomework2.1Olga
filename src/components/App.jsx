@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Contacts from './Contacts/Contacts';
+import Filter from './Filter/Filter';
 import Input from './Input/Input';
 
 export class App extends Component {
@@ -10,6 +11,7 @@ export class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
+    filter: '',
   };
 
   updateState = values => {
@@ -20,6 +22,22 @@ export class App extends Component {
     this.setState(({ contacts }) => ({
       contacts: contacts.filter(ob => ob.id !== id),
     }));
+  };
+
+  checkName = name => {
+    return this.state.contacts.find(ob => name === ob.name);
+  };
+
+  onFilterChange = e => {
+    this.setState({
+      filter: e.target.attributes.name.ownerElement.value.toLowerCase(),
+    });
+  };
+
+  onFilter = () => {
+    return this.state.contacts.filter(({ name }) =>
+      name.toLowerCase().includes(this.state.filter)
+    );
   };
 
   render() {
@@ -36,11 +54,13 @@ export class App extends Component {
       >
         <h1>Phonebook</h1>
 
-        <Input updateState={this.updateState} />
+        <Input updateState={this.updateState} checkName={this.checkName} />
+
+        <Filter onFilterChange={this.onFilterChange} />
 
         <Contacts
-          contacts={this.state.contacts}
           onDeleteClick={this.onDeleteClick}
+          contacts={this.onFilter()}
         />
       </div>
     );
